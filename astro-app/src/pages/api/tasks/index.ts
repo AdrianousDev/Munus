@@ -1,20 +1,32 @@
 import type { APIRoute } from "astro";
+import { postgrest } from "../../../server/postgrest";
+
+export const prerender = false;
 
 export const GET: APIRoute = async () => {
-    const tasks = [
-        {
-            id: "1",
-            title: "Estudar Astro",
-            description: "Ler as docs.",
-            completed: false,
-        },
-    ];
+    try {
+        const postgrestResponse = await postgrest("/tasks?order=id.asc");
 
-    return Response.json(tasks);
-};
+        const body = await postgrestResponse.text();
 
-export const POST: APIRoute = async ({ request }) => {
-    const body = await request.json();
+        return new Response(body, {
+            status: postgrestResponse.status,
+            headers: {
+                "Content-Type":
+                    postgrestResponse.headers.get("content-type") ??
+                    "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to fetch tasks from PostgREST:", error);
 
-    return Response.json({ ping: "pong" });
+        return Response.json(
+            {
+                message: "Could not fetch tasks",
+            },
+            {
+                status: 502,
+            },
+        );
+    }
 };
