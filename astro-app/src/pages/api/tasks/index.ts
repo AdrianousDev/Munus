@@ -30,3 +30,39 @@ export const GET: APIRoute = async () => {
         );
     }
 };
+
+export const POST: APIRoute = async ({ request }) => {
+    try {
+        const { title, description } = await request.json();
+
+        const postgrestResponse = await postgrest("/tasks", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Prefer: "return=representation",
+            },
+            body: JSON.stringify({
+                title,
+                description,
+            }),
+        });
+
+        const body = await postgrestResponse.text();
+
+        return new Response(body, {
+            status: postgrestResponse.status,
+            headers: {
+                "Content-Type":
+                    postgrestResponse.headers.get("content-type") ??
+                    "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to create task:", error);
+
+        return Response.json(
+            { message: "Could not create task" },
+            { status: 502 },
+        );
+    }
+};
