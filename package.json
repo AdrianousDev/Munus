@@ -5,6 +5,7 @@
         "dev:react": "npm --prefix react-app run dev",
         "build:astro": "npm --prefix astro-app run build",
         "build:react": "npm --prefix react-app run build",
-        "build": "npm run build:react && npm run build:astro"
+        "build": "npm run build:react && npm run build:astro",
+        "run-dist": "node astro-app/dist/server/entry.mjs"
     }
 }
