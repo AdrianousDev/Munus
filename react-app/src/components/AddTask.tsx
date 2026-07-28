@@ -6,7 +6,7 @@ export const AddTask = () => {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
 
-    const { addTask } = useTasks();
+    const { addTask, isCreatingTask } = useTasks();
 
     const handleClick = () => {
         addTask(title, description);
@@ -27,10 +27,17 @@ export const AddTask = () => {
             />
 
             <button
-                className="bg-slate-500 text-white px-4 py-2 rounded-md font-medium cursor-pointer"
+                className="
+                bg-slate-500 text-white px-4 py-2 rounded-md font-medium cursor-pointer
+                disabled:bg-slate-300 disabled:cursor-not-allowed
+                transition-colors duration-200
+                "
                 onClick={handleClick}
+                disabled={
+                    isCreatingTask || !title.trim() || !description.trim()
+                }
             >
-                Adicionar
+                {isCreatingTask ? "Adicionando..." : "Adicionar"}
             </button>
         </div>
     );

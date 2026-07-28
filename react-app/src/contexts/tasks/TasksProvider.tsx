@@ -5,7 +5,8 @@ import type { Task } from "../../interfaces/tasks/ITask";
 
 export const TasksProvider = ({ children }: ITasksProviderProps) => {
     const [tasks, setTasks] = useState<Task[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [isFetchingTasks, setIsFetchingTasks] = useState(true);
+    const [isCreatingTask, setIsCreatingTask] = useState(false);
 
     useEffect(() => {
         async function fetchTasks() {
@@ -23,7 +24,7 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
             } catch (error) {
                 console.error(error);
             } finally {
-                setLoading(false);
+                setIsFetchingTasks(false);
             }
         }
 
@@ -42,6 +43,8 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
             title: title.trim(),
             description: description.trim(),
         };
+
+        setIsCreatingTask(true);
 
         try {
             const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -67,6 +70,8 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         } catch (error) {
             console.error(error);
             throw error;
+        } finally {
+            setIsCreatingTask(false);
         }
     };
 
@@ -105,7 +110,13 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
 
     return (
         <TasksContext.Provider
-            value={{ tasks, loading, addTask, handleCompletedClick }}
+            value={{
+                tasks,
+                isFetchingTasks,
+                isCreatingTask,
+                addTask,
+                handleCompletedClick,
+            }}
         >
             {children}
         </TasksContext.Provider>
