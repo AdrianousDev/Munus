@@ -39,6 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Accept: "application/vnd.pgrst.object+json",
                 Prefer: "return=representation",
             },
             body: JSON.stringify({
