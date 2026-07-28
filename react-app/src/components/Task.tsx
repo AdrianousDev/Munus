@@ -14,7 +14,7 @@ export const Task = ({ id, title, completed }: ITaskProps) => {
         <li key={id} className="flex gap-2">
             <button
                 className={`bg-slate-400 text-left w-full flex items-center gap-2 text-white p-2 rounded-md cursor-pointer ${completed && "line-through"}`}
-                onClick={() => handleCompletedClick(id)}
+                onClick={() => handleCompletedClick(id, completed)}
             >
                 {completed && <CheckIcon />}
                 {title}

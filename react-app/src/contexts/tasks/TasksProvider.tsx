@@ -70,16 +70,37 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         }
     };
 
-    const handleCompletedClick = (id: number): void => {
-        setTasks((currentTasks) =>
-            currentTasks.map((task) => {
-                if (task.id === id) {
-                    return { ...task, completed: !task.completed };
-                }
+    const handleCompletedClick = async (
+        id: number,
+        completed: boolean,
+    ): Promise<void> => {
+        try {
+            const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
-                return task;
-            }),
-        );
+            const response = await fetch(`${apiUrl}/tasks/${id}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ completed: !completed }),
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(`Erro ao mudar status da tarefa: ${message}`);
+            }
+
+            const updatedTask: Task = await response.json();
+
+            setTasks((currentTasks) =>
+                currentTasks.map((task) =>
+                    task.id === updatedTask.id ? updatedTask : task,
+                ),
+            );
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     };
 
     return (
