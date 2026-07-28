@@ -108,6 +108,33 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         }
     };
 
+    const handleDeleteClick = async (id: number) => {
+        try {
+            const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+            const response = await fetch(`${apiUrl}/tasks/${id}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(`Erro ao deletar task: ${message}`);
+            }
+
+            const deletedTask: Task = await response.json();
+
+            setTasks((currentTasks) =>
+                currentTasks.filter((task) => task.id !== deletedTask.id),
+            );
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    };
+
     return (
         <TasksContext.Provider
             value={{
@@ -116,6 +143,7 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
                 isCreatingTask,
                 addTask,
                 handleCompletedClick,
+                handleDeleteClick,
             }}
         >
             {children}
