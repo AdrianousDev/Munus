@@ -30,19 +30,44 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         fetchTasks();
     }, []);
 
-    const addTask = (title: string, description: string): void => {
-        if (!title) throw new Error("Título inválido.");
+    const addTask = async (
+        title: string,
+        description: string,
+    ): Promise<void> => {
+        if (!title.trim()) throw new Error("Título inválido.");
 
-        if (!description) throw new Error("Descrição inválida.");
+        if (!description.trim()) throw new Error("Descrição inválida.");
 
         const newTask = {
-            id: tasks.length + 1,
-            title,
-            description,
-            completed: false,
+            title: title.trim(),
+            description: description.trim(),
         };
 
-        setTasks((prevTasks) => [...prevTasks, newTask]);
+        try {
+            const apiUrl = import.meta.env.VITE_API_BASE_URL;
+
+            const response = await fetch(`${apiUrl}/tasks`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(newTask),
+            });
+
+            if (!response.ok) {
+                const message = await response.text();
+                throw new Error(`Erro ao criar tarefa: ${message}`);
+            }
+
+            const createdTask: Task = await response.json();
+
+            if (!createdTask) {
+                throw new Error("A API não retornou a tarefa criada.");
+            }
+
+            setTasks((currentTasks) => [...currentTasks, createdTask]);
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     };
 
     const handleCompletedClick = (id: number): void => {
