@@ -53,3 +53,44 @@ export const PATCH: APIRoute = async ({ params, request }) => {
         },
     });
 };
+
+export const DELETE: APIRoute = async ({ params }) => {
+    const { id } = params;
+
+    if (!id) {
+        return Response.json(
+            { message: "Task ID is required" },
+            { status: 400 },
+        );
+    }
+
+    try {
+        const response = await postgrest(
+            `/tasks?id=eq.${encodeURIComponent(id)}`,
+            {
+                method: "DELETE",
+                headers: {
+                    Accept: "application/vnd.pgrst.object+json",
+                    Prefer: "return=representation",
+                },
+            },
+        );
+
+        const body = await response.text();
+
+        return new Response(body, {
+            status: response.status,
+            headers: {
+                "Content-Type":
+                    response.headers.get("content-type") ?? "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to delete task:", error);
+
+        return Response.json(
+            { message: "Could not delete task" },
+            { status: 502 },
+        );
+    }
+};
