@@ -5,8 +5,12 @@ import type { Task } from "../../interfaces/tasks/ITask";
 
 export const TasksProvider = ({ children }: ITasksProviderProps) => {
     const [tasks, setTasks] = useState<Task[]>([]);
+
     const [isFetchingTasks, setIsFetchingTasks] = useState(true);
     const [isCreatingTask, setIsCreatingTask] = useState(false);
+
+    const [dialogTask, setDialogTask] = useState<Task | null>(null);
+    const [visibleDialogTask, setVisibleDialogTask] = useState(false);
 
     useEffect(() => {
         async function fetchTasks() {
@@ -108,6 +112,12 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         }
     };
 
+    const handleSeeDetailsClick = (id: number) => {
+        const chosenTask = tasks.find((task) => task.id === id) as Task;
+        setDialogTask(chosenTask);
+        setVisibleDialogTask(true);
+    };
+
     const handleDeleteClick = async (id: number) => {
         try {
             const apiUrl = import.meta.env.VITE_API_BASE_URL;
@@ -135,15 +145,23 @@ export const TasksProvider = ({ children }: ITasksProviderProps) => {
         }
     };
 
+    const handleCloseDialogTask = () => {
+        setVisibleDialogTask(false);
+    };
+
     return (
         <TasksContext.Provider
             value={{
                 tasks,
                 isFetchingTasks,
                 isCreatingTask,
+                dialogTask,
+                visibleDialogTask,
                 addTask,
                 handleCompletedClick,
+                handleSeeDetailsClick,
                 handleDeleteClick,
+                handleCloseDialogTask,
             }}
         >
             {children}

@@ -1,4 +1,5 @@
 import { AddTask } from "./components/AddTask";
+import { SeeDetailsTask } from "./components/SeeDetailsTask";
 import { TaskList } from "./components/TaskList";
 
 function App() {
@@ -12,6 +13,8 @@ function App() {
                 <AddTask />
 
                 <TaskList />
+
+                <SeeDetailsTask />
             </div>
         </div>
     );

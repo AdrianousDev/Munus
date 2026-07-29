@@ -8,7 +8,8 @@ interface ITaskProps {
 }
 
 export const Task = ({ id, title, completed }: ITaskProps) => {
-    const { handleCompletedClick, handleDeleteClick } = useTasks();
+    const { handleCompletedClick, handleSeeDetailsClick, handleDeleteClick } =
+        useTasks();
 
     return (
         <li key={id} className="flex gap-2">
@@ -20,7 +21,10 @@ export const Task = ({ id, title, completed }: ITaskProps) => {
                 {title}
             </button>
 
-            <button className="bg-slate-400 p-2 rounded-md text-white cursor-pointer">
+            <button
+                className="bg-slate-400 p-2 rounded-md text-white cursor-pointer"
+                onClick={() => handleSeeDetailsClick(id)}
+            >
                 <ChevronRightIcon />
             </button>
 
