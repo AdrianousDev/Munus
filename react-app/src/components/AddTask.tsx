@@ -20,10 +20,11 @@ export const AddTask = () => {
                 setValue={setTitle}
             />
 
-            <InputText
-                placeholder={"Digite a descrição da tarefa"}
+            <textarea
+                placeholder="Digite a descrição da tarefa"
+                className="bg-white border border-slate-300 outline-slate-400 px-4 py-2 rounded-md font-extralight text-slate-600 resize-none"
                 value={description}
-                setValue={setDescription}
+                onChange={({ target }) => setDescription(target.value)}
             />
 
             <button
