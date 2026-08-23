@@ -41,7 +41,12 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         const token = JWT.sign(
-            { id: user.id, email: user.email, createdAt: user.created_at },
+            {
+                id: user.id,
+                email: user.email,
+                username: user.username,
+                createdAt: user.created_at,
+            },
             import.meta.env.JWT_SECRET_KEY,
             { expiresIn: "1h" },
         );

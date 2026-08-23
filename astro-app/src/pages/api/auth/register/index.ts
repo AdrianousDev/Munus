@@ -8,11 +8,15 @@ export const prerender = false;
 const SALT_ROUNDS = 12;
 
 export const POST: APIRoute = async ({ request }) => {
-    const { email, password } = await request.json();
+    const { email, password, username } = await request.json();
 
-    if (typeof email !== "string" || typeof password !== "string") {
+    if (
+        typeof email !== "string" ||
+        typeof password !== "string" ||
+        typeof username !== "string"
+    ) {
         return Response.json(
-            { message: "Email e senha são obrigatórios" },
+            { message: "Email, senha e username são obrigatórios" },
             { status: 400 },
         );
     }
@@ -35,6 +39,7 @@ export const POST: APIRoute = async ({ request }) => {
             },
             body: JSON.stringify({
                 email,
+                username,
                 password_hash: passwordHash,
             }),
         });
