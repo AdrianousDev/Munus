@@ -2,6 +2,7 @@
 
 declare namespace App {
     interface Locals {
-        userId?: number;
+        userId: number;
+        boardId?: number;
     }
 }

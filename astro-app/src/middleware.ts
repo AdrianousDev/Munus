@@ -1,7 +1,8 @@
-import { defineMiddleware } from "astro:middleware";
+import { defineMiddleware, sequence } from "astro:middleware";
 import JWT from "jsonwebtoken";
+import { postgrest } from "./server/postgrest";
 
-export const onRequest = defineMiddleware(async (context, next) => {
+const authenticateUser = defineMiddleware(async (context, next) => {
     const { routePattern } = context;
 
     if (
@@ -53,3 +54,55 @@ export const onRequest = defineMiddleware(async (context, next) => {
         );
     }
 });
+
+const authorizeBoardOwner = defineMiddleware(async (context, next) => {
+    const isBoardRoute = context.routePattern === "/api/boards/[id]";
+
+    const isNestedBoardRoute = context.routePattern.startsWith(
+        "/api/boards/[boardId]/",
+    );
+
+    if (!isBoardRoute && !isNestedBoardRoute) {
+        return next();
+    }
+
+    const id = context.params.boardId ?? context.params.id;
+
+    const boardId = Number(id);
+
+    if (!Number.isSafeInteger(boardId) || boardId <= 0) {
+        return Response.json({ message: "Board ID inválido" }, { status: 400 });
+    }
+
+    const boardResponse = await postgrest(
+        `/boards?id=eq.${boardId}` +
+            `&user_id=eq.${context.locals.userId}` +
+            `&select=id`,
+        {
+            method: "HEAD",
+            headers: {
+                Accept: "application/vnd.pgrst.object+json",
+            },
+        },
+    );
+
+    if (boardResponse.status === 406) {
+        return Response.json(
+            { message: "Board não encontrado" },
+            { status: 404 },
+        );
+    }
+
+    if (!boardResponse.ok) {
+        return Response.json(
+            { message: "Não foi possível validar o board" },
+            { status: 502 },
+        );
+    }
+
+    context.locals.boardId = boardId;
+
+    return next();
+});
+
+export const onRequest = sequence(authenticateUser, authorizeBoardOwner);
