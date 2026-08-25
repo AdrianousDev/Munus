@@ -11,7 +11,8 @@ const authenticateUser = defineMiddleware(async (context, next) => {
 
     if (
         routePattern === "/api/auth/register" ||
-        routePattern === "/api/auth/login"
+        routePattern === "/api/auth/login" ||
+        routePattern === "/api/auth/logout"
     ) {
         return next();
     }
