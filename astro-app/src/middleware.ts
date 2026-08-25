@@ -5,6 +5,10 @@ import { postgrest } from "./server/postgrest";
 const authenticateUser = defineMiddleware(async (context, next) => {
     const { routePattern } = context;
 
+    if (!context.url.pathname.startsWith("/api/")) {
+        return next();
+    }
+
     if (
         routePattern === "/api/auth/register" ||
         routePattern === "/api/auth/login"
@@ -12,19 +16,17 @@ const authenticateUser = defineMiddleware(async (context, next) => {
         return next();
     }
 
-    const authorization = context.request.headers.get("authorization");
+    const token = context.cookies.get("access_token")?.value;
 
-    if (!authorization?.startsWith("Bearer ")) {
-        return Response.json(
-            { message: "Token não informado" },
-            { status: 401 },
-        );
+    if (!token) {
+        return Response.json({ message: "Não autenticado" }, { status: 401 });
     }
 
-    const token = authorization.slice("Bearer ".length);
-
     try {
-        const decoded = JWT.verify(token, import.meta.env.JWT_SECRET_KEY);
+        const decoded = JWT.verify(token, import.meta.env.JWT_SECRET_KEY, {
+            issuer: "munus",
+            audience: "munus-api",
+        });
 
         if (
             typeof decoded === "string" ||

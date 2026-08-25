@@ -5,7 +5,7 @@ import { postgrest } from "../../../../server/postgrest";
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, cookies }) => {
     try {
         const { email, password } = await request.json();
 
@@ -43,15 +43,20 @@ export const POST: APIRoute = async ({ request }) => {
         const token = JWT.sign(
             {
                 id: user.id,
-                email: user.email,
-                username: user.username,
-                createdAt: user.created_at,
             },
             import.meta.env.JWT_SECRET_KEY,
-            { expiresIn: "1h" },
+            { expiresIn: "1h", issuer: "munus", audience: "munus-api" },
         );
 
-        return Response.json({ token });
+        cookies.set("access_token", token, {
+            httpOnly: true,
+            secure: import.meta.env.PROD,
+            sameSite: "lax",
+            path: "/",
+            maxAge: 60 * 60,
+        });
+
+        return Response.json({ message: "Login realizado com sucesso" });
     } catch (error) {
         console.error("Failed to authenticate user:", error);
 
