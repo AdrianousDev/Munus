@@ -1,21 +1,25 @@
-import { AddTask } from "./components/AddTask";
-import { SeeDetailsTask } from "./components/SeeDetailsTask";
-import { TaskList } from "./components/TaskList";
+import { HashRouter, Route, Routes } from "react-router-dom";
+import PageNotFound from "./components/PageNotFound";
+import Login from "./components/Login";
+import UserProvider from "./contexts/user/UserProvider";
+import ProtectedRoute from "./components/helper/ProtectedRoute";
+import Boards from "./components/Boards";
 
 function App() {
     return (
-        <div className="w-screen h-screen bg-slate-500 flex justify-center p-6">
-            <div className="w-125 space-y-4">
-                <h1 className="text-center text-slate-100 text-2xl font-bold">
-                    Task Manager React
-                </h1>
+        <div>
+            <HashRouter>
+                <UserProvider>
+                    <Routes>
+                        <Route path="/login" element={<Login />} />
 
-                <AddTask />
-
-                <TaskList />
-
-                <SeeDetailsTask />
-            </div>
+                        <Route element={<ProtectedRoute />}>
+                            <Route path="/" element={<Boards />} />
+                            <Route path="*" element={<PageNotFound />} />
+                        </Route>
+                    </Routes>
+                </UserProvider>
+            </HashRouter>
         </div>
     );
 }
