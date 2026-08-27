@@ -37,10 +37,10 @@ export const GET: APIRoute = async ({ locals }) => {
 
 export const POST: APIRoute = async ({ request, locals }) => {
     try {
-        const { title } = await request.json();
+        const { title, color_key } = await request.json();
 
         const postgrestResponse = await postgrest(
-            "/boards?select=id,title,created_at",
+            "/boards?select=id,title,color_key,created_at",
             {
                 method: "POST",
                 headers: {
@@ -50,6 +50,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 },
                 body: JSON.stringify({
                     title,
+                    color_key,
                     user_id: locals.userId,
                 }),
             },
