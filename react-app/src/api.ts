@@ -65,3 +65,16 @@ export const USER_POST = (body: {
         },
     };
 };
+
+export const BOARDS_GET = (): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards`,
+        options: {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        },
+    };
+};

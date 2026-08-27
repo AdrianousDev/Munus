@@ -1,8 +1,20 @@
-import { useEffect, useState, type PropsWithChildren } from "react";
+import {
+    useCallback,
+    useEffect,
+    useState,
+    type PropsWithChildren,
+} from "react";
 import { UserContext } from "./UserContext";
 import type IUser from "../../interfaces/IUser";
-import { LOGIN_POST, POST_LOGOUT, USER_GET, USER_POST } from "../../api";
+import {
+    BOARDS_GET,
+    LOGIN_POST,
+    POST_LOGOUT,
+    USER_GET,
+    USER_POST,
+} from "../../api";
 import { useNavigate } from "react-router-dom";
+import type IBoard from "../../interfaces/IBoard";
 
 const UserProvider = ({ children }: PropsWithChildren) => {
     const [user, setUser] = useState<IUser | null>(null);
@@ -10,15 +22,47 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [boards, setBoards] = useState<IBoard[] | null>(null);
+
     const navigate = useNavigate();
 
-    const getUser = async () => {
+    const fetchUser = async (): Promise<IUser> => {
         const { url, options } = USER_GET();
         const response = await fetch(url, options);
-        const json = await response.json();
-        setUser(json);
-        setIsLogged(true);
+
+        if (!response.ok) {
+            throw new Error("Usuário não autenticado");
+        }
+
+        return response.json();
     };
+
+    const fetchUserBoards = async (): Promise<IBoard[]> => {
+        const { url, options } = BOARDS_GET();
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            throw new Error("Não foi possível carregar os boards");
+        }
+
+        const data: unknown = await response.json();
+
+        if (!Array.isArray(data)) {
+            throw new Error("Formato de boards inválido");
+        }
+
+        return data as IBoard[];
+    };
+
+    const loadUserSession = useCallback(async (): Promise<void> => {
+        const currentUser = await fetchUser();
+
+        const currentBoards = await fetchUserBoards();
+
+        setUser(currentUser);
+        setBoards(currentBoards);
+        setIsLogged(true);
+    }, []);
 
     const userLogin = async (
         email: string,
@@ -32,11 +76,10 @@ const UserProvider = ({ children }: PropsWithChildren) => {
             const loginResponse = await fetch(url, options);
 
             if (!loginResponse.ok) {
-                throw new Error(`Error: Usuário inválido`);
+                throw new Error("Usuário inválido");
             }
 
-            await getUser();
-
+            await loadUserSession();
             navigate("/");
         } catch (err: unknown) {
             if (err instanceof Error) {
@@ -113,19 +156,11 @@ const UserProvider = ({ children }: PropsWithChildren) => {
     useEffect(() => {
         const loadUser = async () => {
             try {
-                const { url, options } = USER_GET();
-                const response = await fetch(url, options);
-
-                if (!response.ok) {
-                    setIsLogged(false);
-                    return;
-                }
-
-                const user = await response.json();
-
-                setUser(user);
-                setIsLogged(true);
+                setLoading(true);
+                await loadUserSession();
             } catch {
+                setUser(null);
+                setBoards(null);
                 setIsLogged(false);
             } finally {
                 setLoading(false);
@@ -133,12 +168,13 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         };
 
         loadUser();
-    }, []);
+    }, [loadUserSession]);
 
     return (
         <UserContext.Provider
             value={{
                 user,
+                boards,
                 error,
                 loading,
                 isLogged,

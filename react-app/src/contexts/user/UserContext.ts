@@ -1,8 +1,10 @@
 import { createContext } from "react";
 import type IUser from "../../interfaces/IUser";
+import type Board from "../../interfaces/IBoard";
 
 interface UserContextValue {
     user: IUser | null;
+    boards: Board[] | null;
     loading: boolean;
     isLogged: boolean;
     error: string | null;

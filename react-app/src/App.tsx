@@ -4,6 +4,7 @@ import { Auth } from "./components/auth/Auth";
 import UserProvider from "./contexts/user/UserProvider";
 import ProtectedRoute from "./components/helper/ProtectedRoute";
 import Boards from "./components/Boards";
+import AppLayout from "./components/AppLayout";
 
 function App() {
     return (
@@ -14,7 +15,10 @@ function App() {
                         <Route path="/login" element={<Auth />} />
 
                         <Route element={<ProtectedRoute />}>
-                            <Route path="/" element={<Boards />} />
+                            <Route element={<AppLayout />}>
+                                <Route index element={<Boards />} />
+                            </Route>
+
                             <Route path="*" element={<PageNotFound />} />
                         </Route>
                     </Routes>
