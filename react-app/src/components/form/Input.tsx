@@ -32,6 +32,7 @@ const Input = ({
                 className="w-full bg-white h-14 rounded-lg p-5 font-sans"
                 type={type}
                 name={name}
+                id={name}
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}

@@ -1,26 +1,26 @@
-const AddBoardSideBarIcon = () => {
+const AddBoardIcon = () => {
     return (
         <svg
-            width="20"
-            height="20"
-            viewBox="0 0 20 20"
+            width="64"
+            height="64"
+            viewBox="0 0 64 64"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
         >
             <path
-                d="M10 1V19"
+                d="M32 2V62"
                 stroke="black"
-                strokeWidth="2"
+                strokeWidth="4"
                 strokeLinecap="round"
             />
             <path
-                d="M1 10L19 10"
+                d="M2 32L62 32"
                 stroke="black"
-                strokeWidth="2"
+                strokeWidth="4"
                 strokeLinecap="round"
             />
         </svg>
     );
 };
 
-export default AddBoardSideBarIcon;
+export default AddBoardIcon;

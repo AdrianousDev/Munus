@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import type IUser from "../../interfaces/IUser";
 import type Board from "../../interfaces/IBoard";
+import type IBoard from "../../interfaces/IBoard";
 
 interface UserContextValue {
     user: IUser | null;
@@ -15,6 +16,7 @@ interface UserContextValue {
         email: string,
         password: string,
     ) => Promise<void>;
+    addBoard: (board: IBoard) => void;
 }
 
 export const UserContext = createContext<UserContextValue | null>(null);

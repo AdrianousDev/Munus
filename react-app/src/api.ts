@@ -1,3 +1,5 @@
+import type { BoardColorKey } from "./constants/boardColors";
+
 export const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface IApiRequestConfig {
@@ -75,6 +77,23 @@ export const BOARDS_GET = (): IApiRequestConfig => {
                 "Content-Type": "application/json",
             },
             credentials: "include",
+        },
+    };
+};
+
+export const BOARD_POST = (body: {
+    title: string;
+    color_key: BoardColorKey;
+}): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards`,
+        options: {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(body),
         },
     };
 };

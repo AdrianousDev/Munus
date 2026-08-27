@@ -5,7 +5,11 @@ import LeaveIcon from "./svgs/LeaveIcon";
 import MenuIcon from "./svgs/MenuIcon";
 import { SearchIcon } from "./svgs/SearchIcon";
 
-const Sidebar = () => {
+interface SidebarProps {
+    onCreateBoard: () => void;
+}
+
+const Sidebar = ({ onCreateBoard }: SidebarProps) => {
     const { user, boards, userLogout } = useUser();
 
     return (
@@ -53,9 +57,12 @@ const Sidebar = () => {
                             ))
                         )}
                     </div>
-                    <div className="mt-2.5 flex w-full shrink-0 cursor-pointer items-center justify-center rounded-md bg-white p-1">
+                    <button
+                        className="mt-2.5 flex w-full shrink-0 cursor-pointer items-center justify-center rounded-md bg-white p-1"
+                        onClick={onCreateBoard}
+                    >
                         <AddBoardSideBarIcon />
-                    </div>
+                    </button>
                 </div>
             </section>
 

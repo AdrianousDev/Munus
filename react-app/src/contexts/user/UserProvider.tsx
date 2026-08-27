@@ -153,6 +153,10 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         }
     };
 
+    const addBoard = (newBoard: IBoard) => {
+        setBoards((currentBoards) => [...(currentBoards ?? []), newBoard]);
+    };
+
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -181,6 +185,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
                 userLogin,
                 userLogout,
                 userRegister,
+                addBoard,
             }}
         >
             {children}
