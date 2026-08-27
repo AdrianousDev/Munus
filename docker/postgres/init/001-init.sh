@@ -61,6 +61,19 @@ CREATE TABLE api.boards (
     REFERENCES api.users(id)
     ON DELETE CASCADE,
   title text NOT NULL,
+  color_key text NOT NULL DEFAULT 'yellow'
+  CHECK (
+      color_key IN (
+          'lemon',
+          'yellow',
+          'pink',
+          'gold',
+          'peach',
+          'lime',
+          'purple',
+          'blue'
+      )
+  ),
   created_at timestamptz NOT NULL DEFAULT now()
 );
 
