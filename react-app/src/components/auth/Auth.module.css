@@ -1,0 +1,158 @@
+.container {
+    position: relative;
+
+    width: 900px;
+    height: 600px;
+
+    overflow: hidden;
+
+    background: #f1f1f1;
+
+    border-radius: 20px;
+
+    box-shadow: 0 5px 5px 0 rgb(0 0 0 / 0.25);
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    width: 100px;
+    height: 40px;
+    background: url("../../assets/MUNUS.svg") center / contain no-repeat;
+    z-index: 100;
+}
+
+/* ============================= */
+/* Forms                         */
+/* ============================= */
+
+.formContainer {
+    position: absolute;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    transition:
+        transform 0.6s ease-in-out,
+        opacity 0.6s ease-in-out;
+    will-change: transform, opacity;
+    background-color: #f1f1f1;
+}
+
+.signInContainer {
+    left: 0;
+    opacity: 1;
+    z-index: 2;
+}
+
+.signUpContainer {
+    left: 0;
+    opacity: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Quando está no modo Sign Up */
+
+.signUpActive .signInContainer {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.signUpActive .signUpContainer {
+    transform: translateX(100%);
+    opacity: 1;
+    z-index: 5;
+    pointer-events: auto;
+}
+
+.signUpActive .overlayContainer {
+    transform: translateX(-100%);
+}
+
+/* ============================= */
+/* Overlay                       */
+/* ============================= */
+
+.overlayContainer {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 50%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 10;
+    transition: transform 0.6s ease-in-out;
+    will-change: transform;
+}
+
+/*
+    O container ocupa 50%.
+
+    Mas o conteúdo interno possui 200%.
+
+    Portanto o overlay interno possui
+    o tamanho total do Auth container.
+*/
+
+.overlay {
+    position: relative;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: var(--color-primary);
+    color: black;
+    transform: translateX(0);
+    transition: transform 0.6s ease-in-out;
+    will-change: transform;
+}
+
+.signUpActive .overlay {
+    transform: translateX(50%);
+}
+
+/* ============================= */
+/* Overlay panels                */
+/* ============================= */
+
+.overlayPanel {
+    position: absolute;
+
+    top: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+    gap: 40px;
+
+    width: 50%;
+    height: 100%;
+
+    padding: 40px;
+
+    transition: transform 0.6s ease-in-out;
+}
+
+.overlayLeft {
+    left: 0;
+
+    transform: translateX(-20%);
+}
+
+.signUpActive .overlayLeft {
+    transform: translateX(0);
+}
+
+.overlayRight {
+    right: 0;
+
+    transform: translateX(0);
+}
+
+.signUpActive .overlayRight {
+    transform: translateX(20%);
+}

@@ -5,12 +5,10 @@ interface IApiRequestConfig {
     options: RequestInit;
 }
 
-interface ILoginPostBody {
+export const LOGIN_POST = (body: {
     email: string;
     password: string;
-}
-
-export const LOGIN_POST = (body: ILoginPostBody): IApiRequestConfig => {
+}): IApiRequestConfig => {
     return {
         url: `${API_URL}/auth/login`,
         options: {
@@ -24,6 +22,20 @@ export const LOGIN_POST = (body: ILoginPostBody): IApiRequestConfig => {
     };
 };
 
+export const POST_LOGOUT = (): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/auth/logout`,
+        options: {
+            method: "POST",
+            credentials: "include",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+        },
+    };
+};
+
 export const USER_GET = (): IApiRequestConfig => {
     return {
         url: `${API_URL}/users/me`,
@@ -33,6 +45,23 @@ export const USER_GET = (): IApiRequestConfig => {
                 "Content-Type": "application/json",
             },
             credentials: "include",
+        },
+    };
+};
+
+export const USER_POST = (body: {
+    username: string;
+    email: string;
+    password: string;
+}): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/auth/register`,
+        options: {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(body),
         },
     };
 };

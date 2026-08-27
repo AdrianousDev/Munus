@@ -1,7 +1,7 @@
 import { useEffect, useState, type PropsWithChildren } from "react";
 import { UserContext } from "./UserContext";
 import type IUser from "../../interfaces/IUser";
-import { API_URL, LOGIN_POST, USER_GET } from "../../api";
+import { LOGIN_POST, POST_LOGOUT, USER_GET, USER_POST } from "../../api";
 import { useNavigate } from "react-router-dom";
 
 const UserProvider = ({ children }: PropsWithChildren) => {
@@ -51,19 +51,63 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         }
     };
 
-    const userLogout = async () => {
-        const response = await fetch(`${API_URL}/auth/logout`, {
-            method: "POST",
-            credentials: "include",
-        });
+    const userLogout = async (): Promise<void> => {
+        try {
+            setError(null);
+            setLoading(true);
 
-        if (!response.ok) {
-            throw new Error("Não foi possível realizar o logout");
+            const { url, options } = POST_LOGOUT();
+
+            const response = await fetch(url, options);
+
+            if (!response.ok) {
+                const body = await response.json().catch(() => null);
+
+                throw new Error(
+                    body?.message ?? "Não foi possível realizar o logout",
+                );
+            }
+
+            setUser(null);
+            setIsLogged(false);
+            navigate("/login", { replace: true });
+        } catch (err: unknown) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Não foi possível realizar o logout",
+            );
+        } finally {
+            setLoading(false);
         }
+    };
 
-        setUser(null);
-        setIsLogged(false);
-        navigate("/login", { replace: true });
+    const userRegister = async (
+        username: string,
+        email: string,
+        password: string,
+    ) => {
+        try {
+            const { url, options } = USER_POST({
+                username,
+                email,
+                password,
+            });
+
+            const response = await fetch(url, options);
+
+            if (response.ok) userLogin(email, password);
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Erro ao logar usuário.");
+            }
+
+            setIsLogged(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -93,7 +137,15 @@ const UserProvider = ({ children }: PropsWithChildren) => {
 
     return (
         <UserContext.Provider
-            value={{ user, error, loading, isLogged, userLogin, userLogout }}
+            value={{
+                user,
+                error,
+                loading,
+                isLogged,
+                userLogin,
+                userLogout,
+                userRegister,
+            }}
         >
             {children}
         </UserContext.Provider>

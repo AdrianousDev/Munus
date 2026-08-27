@@ -4,4 +4,6 @@
 @theme {
     --font-sans: "DM Sans", sans-serif;
     --font-serif: "Domine", serif;
+
+    --color-primary: #ffeb60;
 }

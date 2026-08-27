@@ -1,6 +1,6 @@
 import { HashRouter, Route, Routes } from "react-router-dom";
 import PageNotFound from "./components/PageNotFound";
-import Login from "./components/Login";
+import { Auth } from "./components/auth/Auth";
 import UserProvider from "./contexts/user/UserProvider";
 import ProtectedRoute from "./components/helper/ProtectedRoute";
 import Boards from "./components/Boards";
@@ -11,7 +11,7 @@ function App() {
             <HashRouter>
                 <UserProvider>
                     <Routes>
-                        <Route path="/login" element={<Login />} />
+                        <Route path="/login" element={<Auth />} />
 
                         <Route element={<ProtectedRoute />}>
                             <Route path="/" element={<Boards />} />
