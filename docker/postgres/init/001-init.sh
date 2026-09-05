@@ -91,6 +91,19 @@ CREATE TABLE api.tasks (
     REFERENCES api.boards(id)
     ON DELETE CASCADE,
   title text NOT NULL,
+  color_key text NOT NULL DEFAULT 'yellow'
+  CHECK (
+      color_key IN (
+          'lemon',
+          'yellow',
+          'pink',
+          'gold',
+          'peach',
+          'lime',
+          'purple',
+          'blue'
+      )
+  ),
   description text NOT NULL DEFAULT '',
   completed boolean NOT NULL DEFAULT false
 );
