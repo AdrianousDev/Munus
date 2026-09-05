@@ -2,8 +2,8 @@ import type { Dispatch, SetStateAction } from "react";
 import { BOARD_COLORS, type BoardColorKey } from "../constants/boardColors";
 
 interface IColorsPreviewProps {
-    color_key: BoardColorKey | null;
-    setColor_key: Dispatch<SetStateAction<BoardColorKey | null>>;
+    color_key: BoardColorKey;
+    setColor_key: Dispatch<SetStateAction<BoardColorKey>>;
 }
 
 const ColorsPreview = ({ color_key, setColor_key }: IColorsPreviewProps) => {
@@ -14,13 +14,7 @@ const ColorsPreview = ({ color_key, setColor_key }: IColorsPreviewProps) => {
                     className={`block px-5 py-2.5 rounded-lg text-center ${chave === color_key ? "outline-2 shadow" : ""}`}
                     style={{ backgroundColor: valor }}
                     key={chave}
-                    onClick={() =>
-                        setColor_key((currentValue) =>
-                            currentValue === chave
-                                ? null
-                                : (chave as BoardColorKey),
-                        )
-                    }
+                    onClick={() => setColor_key(chave as BoardColorKey)}
                 >
                     {chave}
                 </span>

@@ -127,3 +127,21 @@ export const TASK_POST = (
         },
     };
 };
+
+export const TASK_PATCH = (
+    boardId: number,
+    task_id: number,
+    body: { title: string; description: string; color_key: BoardColorKey },
+): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards/${boardId}/tasks/${task_id}`,
+        options: {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(body),
+        },
+    };
+};

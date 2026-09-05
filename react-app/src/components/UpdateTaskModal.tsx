@@ -1,30 +1,38 @@
-import { useState, type SubmitEvent } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 import { type BoardColorKey } from "../constants/boardColors";
 import CloseIcon from "./svgs/CloseIcon";
 import useForm from "../hooks/useForm";
-import type ITask from "../interfaces/ITask";
 import Input from "./form/Input";
-import { TASK_POST } from "../api";
+import { TASK_PATCH } from "../api";
 import DescriptionArea from "./form/DescriptionArea";
 import TaskCard from "./TaskCard";
 import ColorsPreview from "./ColorsPreview";
+import type ITask from "../interfaces/ITask";
 
-interface CreateTaskModalProps {
+interface IUpdateTaskModalProps {
     open: boolean;
     onClose: () => void;
-    addTask: (task: ITask) => void;
     boardId: number;
+    task_id: number;
+    titleProps: string;
+    descriptionProps: string;
+    colorKey: BoardColorKey;
+    updateTask: (updatedTask: ITask) => void;
 }
 
-const CreateTaskModal = ({
+const UpdateTaskModal = ({
     open,
     onClose,
-    addTask,
     boardId,
-}: CreateTaskModalProps) => {
+    colorKey,
+    task_id,
+    updateTask,
+    titleProps,
+    descriptionProps,
+}: IUpdateTaskModalProps) => {
     const title = useForm("");
     const description = useForm("");
-    const [color_key, setColor_key] = useState<BoardColorKey>("yellow");
+    const [color_key, setColor_key] = useState<BoardColorKey>(colorKey);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<null | string>(null);
@@ -32,13 +40,13 @@ const CreateTaskModal = ({
     const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!title.validate() || !description.validate() || !color_key) return;
+        if (!title.validate() || !description.validate()) return;
 
         try {
             setLoading(true);
             setError(null);
 
-            const { url, options } = TASK_POST(boardId, {
+            const { url, options } = TASK_PATCH(boardId, task_id, {
                 title: title.value,
                 description: description.value,
                 color_key,
@@ -47,29 +55,48 @@ const CreateTaskModal = ({
             const response = await fetch(url, options);
 
             if (!response.ok) {
-                throw new Error("Não foi possível criar um novo Board.");
+                throw new Error("Não foi atualizar a task.");
             }
 
-            const newTask = await response.json();
+            const updatedTask = await response.json();
 
-            addTask(newTask);
+            updateTask(updatedTask);
             onClose();
         } catch (err) {
             if (err instanceof Error) setError(err.message);
 
-            setError("Não foi possível criar um novo Board.");
+            setError("Não foi atualizar a task.");
         } finally {
             setLoading(false);
         }
     };
 
+    const setTitleValue = title.setValue;
+    const setDescriptionValue = description.setValue;
+
+    useEffect(() => {
+        if (!open) return;
+
+        setTitleValue(titleProps);
+        setDescriptionValue(descriptionProps);
+    }, [
+        open,
+        titleProps,
+        descriptionProps,
+        setTitleValue,
+        setDescriptionValue,
+    ]);
+
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50">
+        <div
+            className="fixed inset-0 z-50 grid place-items-center bg-black/50"
+            onClick={(event) => event.stopPropagation()}
+        >
             <div className="w-full max-w-5xl rounded-lg bg-gray-300 p-5">
                 <header className="w-full flex justify-between">
-                    <h1 className="text-2xl">Create Task</h1>
+                    <h1 className="text-2xl">Update Task</h1>
 
                     <button
                         type="button"
@@ -131,4 +158,4 @@ const CreateTaskModal = ({
     );
 };
 
-export default CreateTaskModal;
+export default UpdateTaskModal;

@@ -32,6 +32,14 @@ const Cards = () => {
         setTasks((currentTasks) => [...currentTasks, task]);
     };
 
+    const updateTask = (updatedTask: ITask) => {
+        setTasks((currentTasks) =>
+            currentTasks.map((task) =>
+                task.id === updatedTask.id ? updatedTask : task,
+            ),
+        );
+    };
+
     useEffect(() => {
         if (boards === null) return;
 
@@ -105,9 +113,12 @@ const Cards = () => {
                     tasks.map((task) => (
                         <TaskCard
                             key={task.id}
+                            id={task.id}
                             title={task.title}
                             description={task.description}
                             colorKey={task.color_key}
+                            boardId={Number(id)}
+                            updateTask={updateTask}
                         />
                     ))}
             </section>
