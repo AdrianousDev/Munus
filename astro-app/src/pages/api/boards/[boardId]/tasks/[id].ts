@@ -61,7 +61,7 @@ export const PATCH: APIRoute = async ({ params, locals, request }) => {
         const updates = await request.json();
 
         const response = await postgrest(
-            `/tasks?id=eq.${taskId}&board_id=eq.${boardId}&select=id,title,description,completed`,
+            `/tasks?id=eq.${taskId}&board_id=eq.${boardId}&select=id,title,description,color_key,completed`,
             {
                 method: "PATCH",
                 headers: {
