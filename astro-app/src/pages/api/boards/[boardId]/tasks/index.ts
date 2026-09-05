@@ -9,7 +9,7 @@ export const GET: APIRoute = async ({ locals }) => {
     try {
         const tasksResponse = await postgrest(
             `/tasks?board_id=eq.${boardId}` +
-                `&select=id,board_id,title,description,completed` +
+                `&select=id,board_id,title,description,color_key,completed` +
                 `&order=id.asc`,
         );
 
@@ -37,7 +37,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const { boardId } = locals;
 
     try {
-        const { title, description } = await request.json();
+        const { title, description, color_key } = await request.json();
 
         const postgrestResponse = await postgrest("/tasks", {
             method: "POST",
@@ -50,6 +50,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
                 board_id: boardId,
                 title,
                 description,
+                color_key,
             }),
         });
 
