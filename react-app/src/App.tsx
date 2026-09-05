@@ -5,6 +5,7 @@ import UserProvider from "./contexts/user/UserProvider";
 import ProtectedRoute from "./components/helper/ProtectedRoute";
 import Boards from "./components/Boards";
 import AppLayout from "./components/AppLayout";
+import Cards from "./components/Cards";
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
                         <Route element={<ProtectedRoute />}>
                             <Route element={<AppLayout />}>
                                 <Route index element={<Boards />} />
+                                <Route path="/boards/:id" element={<Cards />} />
                             </Route>
 
                             <Route path="*" element={<PageNotFound />} />

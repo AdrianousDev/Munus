@@ -97,3 +97,33 @@ export const BOARD_POST = (body: {
         },
     };
 };
+
+export const TASKS_GET = (boardId: number): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards/${boardId}/tasks`,
+        options: {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        },
+    };
+};
+
+export const TASK_POST = (
+    boardId: number,
+    body: { title: string; description: string; color_key: BoardColorKey },
+): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards/${boardId}/tasks`,
+        options: {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(body),
+        },
+    };
+};

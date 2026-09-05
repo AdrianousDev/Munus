@@ -1,4 +1,4 @@
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { BOARD_COLORS } from "../constants/boardColors";
 import useUser from "../contexts/user/useUser";
 import AddBoardIcon from "./svgs/AddBoardIcon";
@@ -11,6 +11,8 @@ const Boards = () => {
     const formattedUserName = user?.username.split(" ")[0];
 
     const { openCreateBoardModal } = useOutletContext<AppOutletContext>();
+
+    const navigate = useNavigate();
 
     return (
         <>
@@ -33,10 +35,11 @@ const Boards = () => {
                     boards.map((board) => (
                         <div
                             key={board.id}
-                            className="flex flex-col items-center justify-center h-52 rounded-lg  shadow-xl cursor-pointer"
+                            className="flex flex-col items-center justify-center h-52 rounded-lg shadow-xl cursor-pointer"
                             style={{
                                 backgroundColor: BOARD_COLORS[board.color_key],
                             }}
+                            onClick={() => navigate(`/boards/${board.id}`)}
                         >
                             <p className="text-xl font-serif font-medium">
                                 {board.title}

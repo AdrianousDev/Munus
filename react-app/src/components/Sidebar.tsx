@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import useUser from "../contexts/user/useUser";
 import AddBoardSideBarIcon from "./svgs/AddBoardSideBarIcon";
 import HomeIcon from "./svgs/HomeIcon";
@@ -11,6 +12,8 @@ interface SidebarProps {
 
 const Sidebar = ({ onCreateBoard }: SidebarProps) => {
     const { user, boards, userLogout } = useUser();
+
+    const navigate = useNavigate();
 
     return (
         <nav className="flex h-full min-h-0 w-70 flex-col overflow-hidden rounded-lg bg-gray-300 pt-2.5">
@@ -51,6 +54,9 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
                                 <div
                                     key={board.id}
                                     className="w-full cursor-pointer rounded-md bg-white p-1 text-center font-sans"
+                                    onClick={() =>
+                                        navigate(`/boards/${board.id}`)
+                                    }
                                 >
                                     {board.title}
                                 </div>
@@ -67,7 +73,10 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
             </section>
 
             <section className="mt-auto shrink-0 pt-2.5 px-2.5">
-                <div className="flex gap-1 items-center justify-center bg-black p-1 rounded-md text-sm font-medium cursor-pointer">
+                <div
+                    className="flex gap-1 items-center justify-center bg-black p-1 rounded-md text-sm font-medium cursor-pointer"
+                    onClick={() => navigate("/")}
+                >
                     <HomeIcon />
                     <span className="text-white">Home</span>
                 </div>
