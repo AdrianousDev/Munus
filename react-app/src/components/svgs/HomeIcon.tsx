@@ -1,4 +1,4 @@
-const HomeIcon = () => {
+const HomeIcon = ({ color }: { color: "white" | "black" }) => {
     return (
         <svg
             width="20"
@@ -9,7 +9,7 @@ const HomeIcon = () => {
         >
             <path
                 d="M4.99999 15.8333H7.49999V10.8333H12.5V15.8333H15V8.33333L9.99999 4.58333L4.99999 8.33333V15.8333ZM3.33333 17.5V7.5L9.99999 2.5L16.6667 7.5V17.5H10.8333V12.5H9.16666V17.5H3.33333Z"
-                fill="white"
+                fill={color}
             />
         </svg>
     );

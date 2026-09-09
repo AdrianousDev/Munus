@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useUser from "../contexts/user/useUser";
 import AddBoardSideBarIcon from "./svgs/AddBoardSideBarIcon";
 import HomeIcon from "./svgs/HomeIcon";
@@ -14,6 +14,7 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
     const { user, boards, userLogout } = useUser();
 
     const navigate = useNavigate();
+    const { pathname } = useLocation();
 
     return (
         <nav className="flex h-full min-h-0 w-70 flex-col overflow-hidden rounded-lg bg-gray-300 pt-2.5">
@@ -50,17 +51,26 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
                         ) : boards.length === 0 ? (
                             <p>Nenhum board encontrado.</p>
                         ) : (
-                            boards.map((board) => (
-                                <div
-                                    key={board.id}
-                                    className="w-full cursor-pointer rounded-md bg-white p-1 text-center font-sans"
-                                    onClick={() =>
-                                        navigate(`/boards/${board.id}`)
-                                    }
-                                >
-                                    {board.title}
-                                </div>
-                            ))
+                            boards.map((board) => {
+                                const isActive =
+                                    pathname === `/boards/${board.id}`;
+
+                                return (
+                                    <div
+                                        key={board.id}
+                                        className={`w-full cursor-pointer rounded-md p-1 text-center font-sans ${
+                                            isActive
+                                                ? "bg-black text-white"
+                                                : "bg-white text-black"
+                                        }`}
+                                        onClick={() =>
+                                            navigate(`/boards/${board.id}`)
+                                        }
+                                    >
+                                        {board.title}
+                                    </div>
+                                );
+                            })
                         )}
                     </div>
                     <button
@@ -74,11 +84,16 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
 
             <section className="mt-auto shrink-0 pt-2.5 px-2.5">
                 <div
-                    className="flex gap-1 items-center justify-center bg-black p-1 rounded-md text-sm font-medium cursor-pointer"
+                    className={`flex cursor-pointer items-center justify-center gap-1 rounded-md p-1 text-sm font-medium
+                    ${
+                        pathname === "/"
+                            ? "bg-black text-white"
+                            : "bg-white text-black"
+                    }`}
                     onClick={() => navigate("/")}
                 >
-                    <HomeIcon />
-                    <span className="text-white">Home</span>
+                    <HomeIcon color={pathname === "/" ? "white" : "black"} />
+                    <span>Home</span>
                 </div>
             </section>
 
