@@ -40,9 +40,10 @@ const TaskCard = ({
     return (
         <article
             className={`
+                flex
+                flex-col
+                overflow-hidden
                 h-96
-                overflow-y-auto
-                scrollbar-none
                 rounded-lg
                 p-5
                 shadow-xl
@@ -58,7 +59,7 @@ const TaskCard = ({
 
             <div className="my-3 h-0.5 bg-black/30" />
 
-            <div className="wrap-break-word">
+            <div className="wrap-break-word flex-1 overflow-y-auto scrollbar-none">
                 {description ? (
                     <Markdown
                         components={{
