@@ -143,7 +143,7 @@ TO task_api;
 
 
 -- Permite cadastrar e consultar boards.
-GRANT SELECT, INSERT
+GRANT SELECT, INSERT, UPDATE
 ON TABLE api.boards
 TO task_api;
 
