@@ -132,7 +132,7 @@ TO task_api;
 
 
 -- Permite cadastrar e consultar usuários.
-GRANT SELECT, INSERT
+GRANT SELECT, INSERT, UPDATE
 ON TABLE api.users
 TO task_api;
 
