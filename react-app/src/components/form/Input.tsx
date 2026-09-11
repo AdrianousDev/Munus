@@ -9,7 +9,7 @@ interface InputProps {
     error?: string | null;
     onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
     placeholder?: string;
-    disabled: boolean;
+    disabled?: boolean;
 }
 
 const Input = ({
