@@ -1,10 +1,11 @@
 import { useState, type SubmitEvent } from "react";
-import { BOARD_COLORS, type BoardColorKey } from "../constants/boardColors";
+import { type BoardColorKey } from "../constants/boardColors";
 import useForm from "../hooks/useForm";
 import Input from "./form/Input";
 import CloseIcon from "./svgs/CloseIcon";
 import { BOARD_POST } from "../api";
 import useUser from "../contexts/user/useUser";
+import ColorsPreview from "./ColorsPreview";
 
 interface CreateBoardModalProps {
     open: boolean;
@@ -13,7 +14,7 @@ interface CreateBoardModalProps {
 
 const CreateBoardModal = ({ open, onClose }: CreateBoardModalProps) => {
     const title = useForm("");
-    const [color_key, setColor_key] = useState<BoardColorKey | null>(null);
+    const [color_key, setColor_key] = useState<BoardColorKey>("yellow");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<null | string>(null);
 
@@ -72,24 +73,10 @@ const CreateBoardModal = ({ open, onClose }: CreateBoardModalProps) => {
                 <form onSubmit={handleSubmit} className="mt-5">
                     <Input type="text" name="title" label="Title" {...title} />
 
-                    <div className="mt-5 grid grid-cols-4 gap-2.5 ">
-                        {Object.entries(BOARD_COLORS).map(([chave, valor]) => (
-                            <span
-                                className={`block px-5 py-2.5 rounded-lg text-center ${chave === color_key ? "outline-2 shadow" : ""}`}
-                                style={{ backgroundColor: valor }}
-                                key={chave}
-                                onClick={() =>
-                                    setColor_key((currentValue) =>
-                                        currentValue === chave
-                                            ? null
-                                            : (chave as BoardColorKey),
-                                    )
-                                }
-                            >
-                                {chave}
-                            </span>
-                        ))}
-                    </div>
+                    <ColorsPreview
+                        setColor_key={setColor_key}
+                        color_key={color_key}
+                    />
 
                     {loading ? (
                         <button
