@@ -17,6 +17,7 @@ interface UserContextValue {
         password: string,
     ) => Promise<void>;
     addBoard: (board: IBoard) => void;
+    changeUsername: (username: string) => void;
 }
 
 export const UserContext = createContext<UserContextValue | null>(null);

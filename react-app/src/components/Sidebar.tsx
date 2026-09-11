@@ -100,7 +100,12 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
             <section className="mt-2.5 shrink-0 bg-gray-400 rounded-b-lg">
                 <div className="flex items-center justify-between p-2.5">
                     <div className="w-10 h-10 rounded-full bg-black"></div>
-                    <h3>{user?.username}</h3>
+                    <h3
+                        className="cursor-pointer"
+                        onClick={() => navigate("/profile")}
+                    >
+                        {user?.username}
+                    </h3>
                     <span
                         className="cursor-pointer"
                         onClick={() => userLogout()}

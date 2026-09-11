@@ -9,6 +9,7 @@ interface InputProps {
     error?: string | null;
     onBlur?: (event: FocusEvent<HTMLInputElement>) => void;
     placeholder?: string;
+    disabled: boolean;
 }
 
 const Input = ({
@@ -20,6 +21,7 @@ const Input = ({
     error,
     onBlur,
     placeholder,
+    disabled = false,
 }: InputProps) => {
     return (
         <div className="w-full">
@@ -29,7 +31,9 @@ const Input = ({
                 </label>
             )}
             <input
-                className="w-full bg-white h-14 rounded-lg p-5 font-sans"
+                className="w-full bg-white h-14 rounded-lg p-5 font-sans
+                disabled:cursor-not-allowed
+              disabled:bg-gray-300"
                 type={type}
                 name={name}
                 id={name}
@@ -37,6 +41,7 @@ const Input = ({
                 onChange={onChange}
                 onBlur={onBlur}
                 placeholder={placeholder}
+                disabled={disabled}
             />
             {error && <p className="text-red-600 text-center mt-1">{error}</p>}
         </div>

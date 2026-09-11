@@ -51,6 +51,20 @@ export const USER_GET = (): IApiRequestConfig => {
     };
 };
 
+export const USERNAME_PATCH = (newUsername: string): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/users/me`,
+        options: {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify({ newUsername }),
+        },
+    };
+};
+
 export const USER_POST = (body: {
     username: string;
     email: string;

@@ -6,6 +6,7 @@ import ProtectedRoute from "./components/helper/ProtectedRoute";
 import Boards from "./components/Boards";
 import AppLayout from "./components/AppLayout";
 import Cards from "./components/Cards";
+import UserProfile from "./components/UserProfile";
 
 function App() {
     return (
@@ -19,6 +20,10 @@ function App() {
                             <Route element={<AppLayout />}>
                                 <Route index element={<Boards />} />
                                 <Route path="/boards/:id" element={<Cards />} />
+                                <Route
+                                    path="/profile"
+                                    element={<UserProfile />}
+                                />
                             </Route>
 
                             <Route path="*" element={<PageNotFound />} />

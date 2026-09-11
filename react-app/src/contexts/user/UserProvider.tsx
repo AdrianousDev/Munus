@@ -157,6 +157,12 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         setBoards((currentBoards) => [...(currentBoards ?? []), newBoard]);
     };
 
+    const changeUsername = (username: string): void => {
+        setUser((currentUser) =>
+            currentUser ? { ...currentUser, username } : null,
+        );
+    };
+
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -186,6 +192,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
                 userLogout,
                 userRegister,
                 addBoard,
+                changeUsername,
             }}
         >
             {children}
