@@ -7,6 +7,9 @@ import type IBoard from "../interfaces/IBoard";
 import AddTaskIcon from "./svgs/AddTaskIcon";
 import CreateTaskModal from "./CreateTaskModal";
 import TaskCard from "./TaskCard";
+import { EditIcon } from "lucide-react";
+import UpdateBoardModal from "./UpdateBoardModal";
+import { BOARD_COLORS } from "../constants/boardColors";
 
 const Cards = () => {
     const { id } = useParams();
@@ -38,6 +41,16 @@ const Cards = () => {
                 task.id === updatedTask.id ? updatedTask : task,
             ),
         );
+    };
+
+    const [isUpdateBoardOpen, setIsUpdateBoardOpen] = useState(false);
+
+    const openUpdateBoardModal = (): void => {
+        setIsUpdateBoardOpen(true);
+    };
+
+    const closeUpdateBoardModal = (): void => {
+        setIsUpdateBoardOpen(false);
     };
 
     useEffect(() => {
@@ -100,7 +113,18 @@ const Cards = () => {
 
     return (
         <>
-            <h1 className="text-4xl">{board.title}</h1>
+            <div className="flex gap-5 items-center justify-between">
+                <h1 className="text-4xl truncate">{board.title}</h1>
+                <span
+                    className="p-2.5 cursor-pointer rounded-lg"
+                    style={{
+                        backgroundColor: BOARD_COLORS[board.color_key],
+                    }}
+                    onClick={openUpdateBoardModal}
+                >
+                    <EditIcon />
+                </span>
+            </div>
             <section className="mt-10 grid gap-10 grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
                 <div
                     className="h-96 bg-gray-300 flex items-center justify-center rounded-lg cursor-pointer"
@@ -127,6 +151,14 @@ const Cards = () => {
                 open={isCreateTaskOpen}
                 onClose={closeCreateTaskModal}
                 addTask={addTask}
+                boardId={Number(id)}
+            />
+
+            <UpdateBoardModal
+                open={isUpdateBoardOpen}
+                onClose={closeUpdateBoardModal}
+                titleProps={board.title}
+                colorKey={board.color_key}
                 boardId={Number(id)}
             />
         </>

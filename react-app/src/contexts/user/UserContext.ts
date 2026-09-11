@@ -17,6 +17,7 @@ interface UserContextValue {
         password: string,
     ) => Promise<void>;
     addBoard: (board: IBoard) => void;
+    updateBoard: (updatedBoard: IBoard) => void;
     changeUsername: (username: string) => void;
 }
 

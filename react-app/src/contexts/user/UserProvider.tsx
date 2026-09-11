@@ -157,6 +157,15 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         setBoards((currentBoards) => [...(currentBoards ?? []), newBoard]);
     };
 
+    const updateBoard = (updatedBoard: IBoard): void => {
+        setBoards(
+            (currentBoards) =>
+                currentBoards?.map((board) =>
+                    board.id === updatedBoard.id ? updatedBoard : board,
+                ) ?? null,
+        );
+    };
+
     const changeUsername = (username: string): void => {
         setUser((currentUser) =>
             currentUser ? { ...currentUser, username } : null,
@@ -192,6 +201,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
                 userLogout,
                 userRegister,
                 addBoard,
+                updateBoard,
                 changeUsername,
             }}
         >

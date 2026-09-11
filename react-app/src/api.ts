@@ -112,6 +112,26 @@ export const BOARD_POST = (body: {
     };
 };
 
+export const BOARD_PATCH = (
+    boardId: number,
+    body: {
+        title: string;
+        color_key: BoardColorKey;
+    },
+): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/boards/${boardId}`,
+        options: {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+            body: JSON.stringify(body),
+        },
+    };
+};
+
 export const TASKS_GET = (boardId: number): IApiRequestConfig => {
     return {
         url: `${API_URL}/boards/${boardId}/tasks`,

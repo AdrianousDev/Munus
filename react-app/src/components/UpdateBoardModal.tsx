@@ -1,0 +1,136 @@
+import { useEffect, useState, type SubmitEvent } from "react";
+import { type BoardColorKey } from "../constants/boardColors";
+import useForm from "../hooks/useForm";
+import Input from "./form/Input";
+import CloseIcon from "./svgs/CloseIcon";
+import { BOARD_PATCH } from "../api";
+import useUser from "../contexts/user/useUser";
+import ColorsPreview from "./ColorsPreview";
+import type IBoard from "../interfaces/IBoard";
+
+interface UpdateBoardModalProps {
+    open: boolean;
+    onClose: () => void;
+    boardId: number;
+    titleProps: string;
+    colorKey: BoardColorKey;
+}
+
+const UpdateBoardModal = ({
+    open,
+    onClose,
+    boardId,
+    titleProps,
+    colorKey,
+}: UpdateBoardModalProps) => {
+    const title = useForm("");
+    const [color_key, setColor_key] = useState<BoardColorKey>(colorKey);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<null | string>(null);
+
+    const { updateBoard } = useUser();
+
+    const handleClose = () => {
+        title.setValue("");
+        setColor_key("yellow");
+        setError(null);
+        onClose();
+    };
+
+    const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        if (!title.validate() || !color_key) return;
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            const { url, options } = BOARD_PATCH(boardId, {
+                title: title.value,
+                color_key,
+            });
+
+            const response = await fetch(url, options);
+
+            if (!response.ok) {
+                throw new Error("Não foi possível atualizar o Board.");
+            }
+
+            const json: IBoard = await response.json();
+
+            console.log(json);
+
+            updateBoard(json);
+
+            handleClose();
+        } catch (err) {
+            if (err instanceof Error) setError(err.message);
+
+            setError("Não foi possível atualizar o Board.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const setTitleValue = title.setValue;
+
+    useEffect(() => {
+        if (!open) return;
+
+        setTitleValue(titleProps);
+    }, [open, titleProps, setTitleValue]);
+
+    if (!open) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50">
+            <div className="rounded-lg bg-gray-300 p-5 w-full max-w-2xl">
+                <header className="w-full flex justify-between">
+                    <h1 className="text-2xl">Update Board</h1>
+
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        className="cursor-pointer"
+                    >
+                        <CloseIcon />
+                    </button>
+                </header>
+
+                <form onSubmit={handleSubmit} className="mt-5">
+                    <Input type="text" name="title" label="Title" {...title} />
+
+                    <ColorsPreview
+                        setColor_key={setColor_key}
+                        color_key={color_key}
+                    />
+
+                    {loading ? (
+                        <button
+                            disabled
+                            className="mt-5 w-full flex items-center justify-center rounded-lg px-16 py-3 font-sans font-bold shadow disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        >
+                            <span
+                                aria-hidden="true"
+                                className="block size-6 animate-spin rounded-full border-2 border-gray-400 border-t-white"
+                            />
+                        </button>
+                    ) : (
+                        <button
+                            type="submit"
+                            disabled={!(title.value && color_key)}
+                            className="mt-5 w-full rounded-lg bg-primary px-16 py-3 font-sans font-bold shadow cursor-pointer transition disabled:bg-gray-700 disabled:text-gray-400 disabled:cursor-not-allowed"
+                        >
+                            SUBMIT
+                        </button>
+                    )}
+
+                    {error && <p>{error}</p>}
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default UpdateBoardModal;
