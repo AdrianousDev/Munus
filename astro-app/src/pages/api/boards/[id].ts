@@ -34,3 +34,47 @@ export const GET: APIRoute = async ({ locals }) => {
         );
     }
 };
+
+export const PATCH: APIRoute = async ({ locals, request }) => {
+    const { boardId } = locals;
+
+    try {
+        const updates = await request.json();
+
+        const response = await postgrest(
+            `/boards?id=eq.${boardId}&select=id,title,color_key,created_at`,
+            {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    Accept: "application/vnd.pgrst.object+json",
+                    Prefer: "return=representation",
+                },
+                body: JSON.stringify(updates),
+            },
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                `PostgREST respondeu com status ${response.status}`,
+            );
+        }
+
+        const body = await response.text();
+
+        return new Response(body, {
+            status: response.status,
+            headers: {
+                "Content-Type":
+                    response.headers.get("content-type") ?? "application/json",
+            },
+        });
+    } catch (error) {
+        console.error("Failed to update board:", error);
+
+        return Response.json(
+            { message: "Could not update board" },
+            { status: 502 },
+        );
+    }
+};
