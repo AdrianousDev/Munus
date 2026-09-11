@@ -29,6 +29,14 @@ const CreateTaskModal = ({
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<null | string>(null);
 
+    const handleClose = () => {
+        title.setValue("");
+        description.setValue("");
+        setColor_key("yellow");
+        setError(null);
+        onClose();
+    };
+
     const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -53,7 +61,7 @@ const CreateTaskModal = ({
             const newTask = await response.json();
 
             addTask(newTask);
-            onClose();
+            handleClose();
         } catch (err) {
             if (err instanceof Error) setError(err.message);
 

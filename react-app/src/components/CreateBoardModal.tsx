@@ -20,6 +20,13 @@ const CreateBoardModal = ({ open, onClose }: CreateBoardModalProps) => {
 
     const { addBoard } = useUser();
 
+    const handleClose = () => {
+        title.setValue("");
+        setColor_key("yellow");
+        setError(null);
+        onClose();
+    };
+
     const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
@@ -43,7 +50,7 @@ const CreateBoardModal = ({ open, onClose }: CreateBoardModalProps) => {
             const newBoard = await response.json();
 
             addBoard(newBoard);
-            onClose();
+            handleClose();
         } catch (err) {
             if (err instanceof Error) setError(err.message);
 
