@@ -5,6 +5,7 @@ import type IBoard from "../../interfaces/IBoard";
 
 interface UserContextValue {
     user: IUser | null;
+    avatarUrl: string;
     boards: Board[] | null;
     loading: boolean;
     isLogged: boolean;
@@ -19,6 +20,7 @@ interface UserContextValue {
     addBoard: (board: IBoard) => void;
     updateBoard: (updatedBoard: IBoard) => void;
     changeUsername: (username: string) => void;
+    uploadAvatar: (file: File) => Promise<void>;
 }
 
 export const UserContext = createContext<UserContextValue | null>(null);

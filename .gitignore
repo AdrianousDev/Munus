@@ -26,6 +26,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+astro-app/uploads/avatar/**
+
 # React .gitignore
 
 # Logs
