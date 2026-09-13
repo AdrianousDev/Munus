@@ -9,6 +9,15 @@ export default defineConfig({
 
     base: "/app/",
 
+    server: {
+        proxy: {
+            "/api": {
+                target: "http://localhost:4321",
+                changeOrigin: false,
+            },
+        },
+    },
+
     build: {
         outDir: resolve(__dirname, "../astro-app/public/app"),
         emptyOutDir: true,

@@ -82,6 +82,17 @@ export const USER_POST = (body: {
     };
 };
 
+export const AVATAR_POST = (formData: FormData): IApiRequestConfig => {
+    return {
+        url: `${API_URL}/avatar`,
+        options: {
+            method: "POST",
+            credentials: "include",
+            body: formData,
+        },
+    };
+};
+
 export const BOARDS_GET = (): IApiRequestConfig => {
     return {
         url: `${API_URL}/boards`,

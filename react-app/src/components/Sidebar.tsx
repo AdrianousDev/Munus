@@ -5,6 +5,7 @@ import HomeIcon from "./svgs/HomeIcon";
 import LeaveIcon from "./svgs/LeaveIcon";
 import MenuIcon from "./svgs/MenuIcon";
 import { SearchIcon } from "./svgs/SearchIcon";
+import UserAvatarImage from "./UserAvatarImage";
 
 interface SidebarProps {
     onCreateBoard: () => void;
@@ -99,7 +100,9 @@ const Sidebar = ({ onCreateBoard }: SidebarProps) => {
 
             <section className="mt-2.5 shrink-0 bg-gray-400 rounded-b-lg">
                 <div className="flex items-center justify-between p-2.5">
-                    <div className="w-10 h-10 rounded-full bg-black"></div>
+                    <div className="w-10 h-10 rounded-full overflow-hidden">
+                        <UserAvatarImage />
+                    </div>
                     <h3
                         className="cursor-pointer"
                         onClick={() => navigate("/profile")}

@@ -7,6 +7,8 @@ import {
 import { UserContext } from "./UserContext";
 import type IUser from "../../interfaces/IUser";
 import {
+    API_URL,
+    AVATAR_POST,
     BOARDS_GET,
     LOGIN_POST,
     POST_LOGOUT,
@@ -18,6 +20,10 @@ import type IBoard from "../../interfaces/IBoard";
 
 const UserProvider = ({ children }: PropsWithChildren) => {
     const [user, setUser] = useState<IUser | null>(null);
+
+    const [avatarVersion, setAvatarVersion] = useState(0);
+    const avatarUrl = `${API_URL}/avatar?v=${avatarVersion}`;
+
     const [isLogged, setIsLogged] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -172,6 +178,23 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         );
     };
 
+    const uploadAvatar = async (file: File): Promise<void> => {
+        const formData = new FormData();
+        formData.append("avatar", file);
+
+        const { url, options } = AVATAR_POST(formData);
+        const response = await fetch(url, options);
+
+        if (!response.ok) {
+            const body = await response.json().catch(() => null);
+            throw new Error(
+                body?.error ?? "Não foi possível atualizar o avatar",
+            );
+        }
+
+        setAvatarVersion((version) => version + 1);
+    };
+
     useEffect(() => {
         const loadUser = async () => {
             try {
@@ -203,6 +226,8 @@ const UserProvider = ({ children }: PropsWithChildren) => {
                 addBoard,
                 updateBoard,
                 changeUsername,
+                uploadAvatar,
+                avatarUrl,
             }}
         >
             {children}

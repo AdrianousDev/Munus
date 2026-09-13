@@ -3,6 +3,7 @@ import useUser from "../contexts/user/useUser";
 import { USERNAME_PATCH } from "../api";
 import { SaveIcon } from "lucide-react";
 import type IUser from "../interfaces/IUser";
+import Avatar from "./Avatar";
 
 const UserProfile = () => {
     const { user, userLogout, changeUsername } = useUser();
@@ -56,7 +57,7 @@ const UserProfile = () => {
 
             <div className="bg-gray-200 text-xl mt-10 py-10 px-30 min-h-0 flex-1 flex flex-col items-center gap-5 rounded-lg">
                 <div className="mb-2.5">
-                    <div className="w-30 h-30 bg-black rounded-full"></div>
+                    <Avatar />
                 </div>
 
                 <form onSubmit={handleSubmit} className="w-full">
