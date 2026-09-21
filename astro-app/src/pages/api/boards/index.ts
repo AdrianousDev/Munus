@@ -3,12 +3,20 @@ import { postgrest } from "../../../server/postgrest";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({ locals }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
     const { userId } = locals;
+
+    const title = new URL(request.url).searchParams.get("title")?.trim();
+
+    const params = new URLSearchParams({
+        user_id: `eq.${userId}`,
+    });
+
+    if (title) params.set("title", `ilike.*${title}*`);
 
     try {
         const postgrestResponse = await postgrest(
-            `/boards?user_id=eq.${userId}`,
+            `/boards?${params.toString()}`,
         );
 
         const body = await postgrestResponse.text();
