@@ -43,22 +43,32 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         return response.json();
     };
 
-    const fetchUserBoards = async (): Promise<IBoard[]> => {
-        const { url, options } = BOARDS_GET();
-        const response = await fetch(url, options);
+    const fetchUserBoards = useCallback(
+        async (title?: string): Promise<IBoard[]> => {
+            const { url, options } = BOARDS_GET(title);
+            const response = await fetch(url, options);
 
-        if (!response.ok) {
-            throw new Error("Não foi possível carregar os boards");
-        }
+            if (!response.ok) {
+                throw new Error("Não foi possível carregar os boards");
+            }
 
-        const data: unknown = await response.json();
+            const data: unknown = await response.json();
 
-        if (!Array.isArray(data)) {
-            throw new Error("Formato de boards inválido");
-        }
+            if (!Array.isArray(data)) {
+                throw new Error("Formato de boards inválido");
+            }
 
-        return data as IBoard[];
-    };
+            return data as IBoard[];
+        },
+        [],
+    );
+
+    const searchUserBoards = useCallback(
+        (title?: string): Promise<IBoard[]> => {
+            return fetchUserBoards(title);
+        },
+        [fetchUserBoards],
+    );
 
     const loadUserSession = useCallback(async (): Promise<void> => {
         const currentUser = await fetchUser();
@@ -68,7 +78,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
         setUser(currentUser);
         setBoards(currentBoards);
         setIsLogged(true);
-    }, []);
+    }, [fetchUserBoards]);
 
     const userLogin = async (
         email: string,
@@ -225,6 +235,7 @@ const UserProvider = ({ children }: PropsWithChildren) => {
                 userRegister,
                 addBoard,
                 updateBoard,
+                searchUserBoards,
                 changeUsername,
                 uploadAvatar,
                 avatarUrl,

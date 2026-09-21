@@ -93,9 +93,17 @@ export const AVATAR_POST = (formData: FormData): IApiRequestConfig => {
     };
 };
 
-export const BOARDS_GET = (): IApiRequestConfig => {
+export const BOARDS_GET = (title?: string): IApiRequestConfig => {
+    const params = new URLSearchParams();
+
+    if (title?.trim()) {
+        params.set("title", title.trim());
+    }
+
+    const queryString = params.toString();
+
     return {
-        url: `${API_URL}/boards`,
+        url: `${API_URL}/boards${queryString ? `?${queryString}` : ""}`,
         options: {
             method: "GET",
             headers: {

@@ -19,6 +19,7 @@ interface UserContextValue {
     ) => Promise<void>;
     addBoard: (board: IBoard) => void;
     updateBoard: (updatedBoard: IBoard) => void;
+    searchUserBoards: (title?: string) => Promise<IBoard[]>;
     changeUsername: (username: string) => void;
     uploadAvatar: (file: File) => Promise<void>;
 }
