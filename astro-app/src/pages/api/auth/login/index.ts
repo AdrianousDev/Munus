@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import bcrypt from "bcrypt";
-import JWT from "jsonwebtoken";
 import { postgrest } from "../../../../server/postgrest";
+import { setAuthCookie } from "../../../../server/authCookie";
 
 export const prerender = false;
 
@@ -40,21 +40,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
             );
         }
 
-        const token = JWT.sign(
-            {
-                id: user.id,
-            },
-            import.meta.env.JWT_SECRET_KEY,
-            { expiresIn: "1h", issuer: "munus", audience: "munus-api" },
-        );
-
-        cookies.set("access_token", token, {
-            httpOnly: true,
-            secure: import.meta.env.PROD,
-            sameSite: "lax",
-            path: "/",
-            maxAge: 60 * 60,
-        });
+        setAuthCookie(cookies, user.id);
 
         return Response.json({ message: "Login realizado com sucesso" });
     } catch (error) {

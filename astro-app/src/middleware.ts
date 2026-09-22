@@ -1,6 +1,10 @@
 import { defineMiddleware, sequence } from "astro:middleware";
 import JWT from "jsonwebtoken";
 import { postgrest } from "./server/postgrest";
+import {
+    ACCESS_TOKEN_RENEW_THRESHOLD_SECONDS,
+    setAuthCookie,
+} from "./server/authCookie";
 
 const authenticateUser = defineMiddleware(async (context, next) => {
     const { routePattern } = context;
@@ -44,6 +48,17 @@ const authenticateUser = defineMiddleware(async (context, next) => {
         if (!decoded.id) throw new Error("Invalid user ID");
 
         context.locals.userId = decoded.id;
+
+        const now = Math.floor(Date.now() / 1000);
+        const remainingTime = (decoded.exp ?? 0) - now;
+
+        console.log(remainingTime);
+
+        if (remainingTime <= ACCESS_TOKEN_RENEW_THRESHOLD_SECONDS) {
+            console.log("renovando cookie");
+
+            setAuthCookie(context.cookies, decoded.id);
+        }
 
         return next();
     } catch (error) {
